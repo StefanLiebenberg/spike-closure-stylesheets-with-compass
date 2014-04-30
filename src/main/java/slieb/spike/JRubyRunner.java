@@ -1,18 +1,20 @@
 package slieb.spike;
 
 
-import org.jruby.Ruby;
-import org.jruby.javasupport.JavaEmbedUtils;
+import com.google.common.io.Files;
+import slieb.spike.closure_gss_compass.CompassJRubyApi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 
 public class JRubyRunner {
     public static void main(String[] args) {
-        List paths = new ArrayList();
-        paths.add("classpath:gems/compass-0.12.2/lib");
-        Ruby ruby = JavaEmbedUtils.initialize(paths);
-        ruby.getLoadService().require("compass");
-        Object compass = ruby.evalScriptlet("puts ");
+        File inputDirectory = new File("src/test/resources/sass");
+//        File outputDirectory = Files.createTempDir();
+//        outputDirectory.deleteOnExit();
+        File outputDirectory = new File("target/sass-output");
+        outputDirectory.mkdirs();
+        CompassJRubyApi api = new CompassJRubyApi(inputDirectory, outputDirectory);
+        api.load();
+        api.compile();
     }
 }
